@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { Sidebar } from "./components";
 import { Outlet, useLocation } from "react-router-dom";
-import AuthContextProvider from "./context/AuthContextProvider";
 
 const Layout = () => {
   const { pathname } = useLocation();
@@ -10,16 +9,13 @@ const Layout = () => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  // List of routes where Sidebar should be hidden
-  const hideSidebarRoutes = ["/login", "/register"];
-
   return (
-    <AuthContextProvider>
-      <div className="flex h-screen bg-gray-50">
-        {!hideSidebarRoutes.includes(pathname) && <Sidebar />}
+    <div className="flex h-screen bg-gray-50">
+      <Sidebar />
+      <div className="flex-1 overflow-y-auto">
         <Outlet />
       </div>
-    </AuthContextProvider>
+    </div>
   );
 };
 

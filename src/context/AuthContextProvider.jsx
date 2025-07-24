@@ -6,27 +6,39 @@ import MuiAlert from "@mui/material/Alert";
 const AuthContextProvider = ({ children }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [auth, setAuth] = useState({
-    token: localStorage.getItem("token") || null,
-    roleId: localStorage.getItem("roleId") || null,
+    token: null,
+    roleId: null,
+    name: null,
   });
 
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    !!localStorage.getItem("token")
-  );
-
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Simulate initial loading/auth check
+  // Check auth state on initial load
   useEffect(() => {
-    const checkAuth = async () => {
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 1000);
-    };
-    checkAuth();
+    const token = localStorage.getItem("token");
+    const roleId = localStorage.getItem("roleId");
+
+    if (token && roleId) {
+      try {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        setAuth({
+          token,
+          roleId,
+          name: payload.name,
+        });
+        setIsAuthenticated(true);
+      } catch (e) {
+        console.error("Invalid token:", e);
+        // Clear invalid auth data if decoding fails
+        localStorage.removeItem("token");
+        localStorage.removeItem("roleId");
+      }
+    }
+    setIsLoading(false);
   }, []);
 
   // Show Snackbar
@@ -57,7 +69,12 @@ const AuthContextProvider = ({ children }) => {
       if (data.success) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("roleId", data.roleId);
-        setAuth({ token: data.token, roleId: data.roleId });
+        const payload = JSON.parse(atob(data.token.split(".")[1]));
+        setAuth({
+          token: data.token,
+          roleId: data.roleId,
+          name: payload.name,
+        });
         setIsAuthenticated(true);
         showSnackbar(data.message || "Login successful!", "success");
         return { success: true, redirectUrl: data.redirectUrl };
@@ -75,7 +92,7 @@ const AuthContextProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("roleId");
-    setAuth({ token: null, roleId: null });
+    setAuth({ token: null, roleId: null, name: null });
     setIsAuthenticated(false);
     showSnackbar("Logged out successfully.", "info");
   };

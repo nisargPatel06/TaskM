@@ -9,10 +9,17 @@ import {
   LogOut,
 } from "lucide-react";
 import AuthContext from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
-  const { auth } = useContext(AuthContext);
+  const { auth, logout } = useContext(AuthContext);
   const roleId = Number(auth?.roleId);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   return (
     <div className="w-64 bg-white shadow-sm border-r border-gray-200 flex flex-col">
@@ -120,16 +127,26 @@ const Sidebar = () => {
       <div className="p-6 border-t border-gray-200">
         <div className="flex items-center space-x-3 mb-4">
           <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
-            <span className="text-white font-medium text-sm">JD</span>
+            <span className="text-white font-medium text-sm">
+              {auth.name
+                ? auth.name
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")
+                : "U"}
+            </span>
           </div>
           <div>
-            <p className="font-medium text-gray-900">John Doe</p>
+            <p className="font-medium text-gray-900">{auth.name || "User"}</p>
             <p className="text-sm text-gray-500">
               {roleId === 3 ? "Employee" : roleId === 2 ? "Superior" : "User"}
             </p>
           </div>
         </div>
-        <button className="w-full flex items-center space-x-2 text-gray-600 hover:text-gray-900">
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center space-x-2 text-gray-600 hover:text-gray-900"
+        >
           <LogOut className="w-4 h-4" />
           <span className="text-sm">Sign Out</span>
         </button>
