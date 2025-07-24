@@ -1,5 +1,4 @@
-import Header from "./Header/Header";
-import Footer from "./Footer/Footer";
+import Sidebar from "./Sidebar/Sidebar";
 import LandingPage from "./LandingPage/LandingPage";
 
-export { Header, Footer, LandingPage };
+export { Sidebar, LandingPage };
