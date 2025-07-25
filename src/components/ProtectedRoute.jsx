@@ -11,6 +11,7 @@ const routeRoles = {
   "/emp-reports": [3],
   "/sup-all-tasks": [2],
   "/sup-all-queries": [2],
+  "/sup-add-task": [2], // Add role access for new route
   "/admin-dashboard": [1],
 };
 

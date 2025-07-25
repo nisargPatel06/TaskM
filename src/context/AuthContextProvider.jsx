@@ -2,6 +2,7 @@ import { useEffect, useState, createContext } from "react";
 import { Snackbar, Slide } from "@mui/material";
 import AuthContext from "./AuthContext";
 import MuiAlert from "@mui/material/Alert";
+import { useLoginMutation } from "../redux/api/authAPI";
 
 const AuthContextProvider = ({ children }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -17,7 +18,8 @@ const AuthContextProvider = ({ children }) => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Check auth state on initial load
+  const [loginMutation] = useLoginMutation();
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     const roleId = localStorage.getItem("roleId");
@@ -33,7 +35,6 @@ const AuthContextProvider = ({ children }) => {
         setIsAuthenticated(true);
       } catch (e) {
         console.error("Invalid token:", e);
-        // Clear invalid auth data if decoding fails
         localStorage.removeItem("token");
         localStorage.removeItem("roleId");
       }
@@ -41,7 +42,6 @@ const AuthContextProvider = ({ children }) => {
     setIsLoading(false);
   }, []);
 
-  // Show Snackbar
   const showSnackbar = (message, severity) => {
     setSnackbarMessage(message);
     setSnackbarSeverity(severity);
@@ -55,16 +55,9 @@ const AuthContextProvider = ({ children }) => {
 
   const SlideTransition = (props) => <Slide {...props} direction="up" />;
 
-  // Login integration
   const login = async (email, password) => {
     try {
-      const response = await fetch("http://localhost:5298/api/Login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
+      const data = await loginMutation({ email, password }).unwrap();
 
       if (data.success) {
         localStorage.setItem("token", data.token);
@@ -88,7 +81,6 @@ const AuthContextProvider = ({ children }) => {
     }
   };
 
-  // Logout
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("roleId");

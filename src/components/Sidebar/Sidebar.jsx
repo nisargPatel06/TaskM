@@ -7,18 +7,26 @@ import {
   BarChart3,
   Settings,
   LogOut,
+  PlusSquare, // Import PlusSquare
 } from "lucide-react";
 import AuthContext from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Sidebar = () => {
   const { auth, logout } = useContext(AuthContext);
   const roleId = Number(auth?.roleId);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
     logout();
     navigate("/login");
+  };
+
+  const getLinkClass = (path) => {
+    return location.pathname === path
+      ? "bg-blue-600 text-white rounded-lg px-3 py-2.5 flex items-center space-x-3 font-medium"
+      : "text-gray-600 hover:bg-gray-100 rounded-lg px-3 py-2.5 flex items-center space-x-3";
   };
 
   return (
@@ -50,36 +58,27 @@ const Sidebar = () => {
             <>
               <a
                 href="/emp-dashboard"
-                className="bg-blue-600 text-white rounded-lg px-3 py-2.5 flex items-center space-x-3 font-medium"
+                className={getLinkClass("/emp-dashboard")}
               >
                 <LayoutDashboard className="w-5 h-5" />
                 <span>Dashboard</span>
               </a>
-              <a
-                href="/emp-tasks"
-                className="text-gray-600 hover:bg-gray-100 rounded-lg px-3 py-2.5 flex items-center space-x-3"
-              >
+              <a href="/emp-tasks" className={getLinkClass("/emp-tasks")}>
                 <CheckSquare className="w-5 h-5" />
                 <span>Tasks</span>
               </a>
               <a
                 href="/emp-time-tracking"
-                className="text-gray-600 hover:bg-gray-100 rounded-lg px-3 py-2.5 flex items-center space-x-3"
+                className={getLinkClass("/emp-time-tracking")}
               >
                 <Clock className="w-5 h-5" />
                 <span>Time Tracking</span>
               </a>
-              <a
-                href="/emp-queries"
-                className="text-gray-600 hover:bg-gray-100 rounded-lg px-3 py-2.5 flex items-center space-x-3"
-              >
+              <a href="/emp-queries" className={getLinkClass("/emp-queries")}>
                 <MessageSquare className="w-5 h-5" />
                 <span>Queries</span>
               </a>
-              <a
-                href="/emp-reports"
-                className="text-gray-600 hover:bg-gray-100 rounded-lg px-3 py-2.5 flex items-center space-x-3"
-              >
+              <a href="/emp-reports" className={getLinkClass("/emp-reports")}>
                 <BarChart3 className="w-5 h-5" />
                 <span>Reports</span>
               </a>
@@ -90,17 +89,21 @@ const Sidebar = () => {
             <>
               <a
                 href="/sup-all-tasks"
-                className="bg-blue-600 text-white rounded-lg px-3 py-2.5 flex items-center space-x-3 font-medium"
+                className={getLinkClass("/sup-all-tasks")}
               >
                 <CheckSquare className="w-5 h-5" />
                 <span>All Tasks</span>
               </a>
               <a
                 href="/sup-all-queries"
-                className="text-gray-600 hover:bg-gray-100 rounded-lg px-3 py-2.5 flex items-center space-x-3"
+                className={getLinkClass("/sup-all-queries")}
               >
                 <MessageSquare className="w-5 h-5" />
                 <span>All Queries</span>
+              </a>
+              <a href="/sup-add-task" className={getLinkClass("/sup-add-task")}>
+                <PlusSquare className="w-5 h-5" />
+                <span>Add Task</span>
               </a>
             </>
           )}
@@ -113,10 +116,7 @@ const Sidebar = () => {
         </div>
 
         <nav className="px-3">
-          <a
-            href="#"
-            className="text-gray-600 hover:bg-gray-100 rounded-lg px-3 py-2.5 flex items-center space-x-3"
-          >
+          <a href="#" className={getLinkClass("/settings")}>
             <Settings className="w-5 h-5" />
             <span>Settings</span>
           </a>

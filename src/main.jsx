@@ -21,6 +21,7 @@ import Queries from "./components/empPages/Queries.jsx";
 import Reports from "./components/empPages/Reports.jsx";
 import AllTasks from "./components/supPages/AllTasks.jsx";
 import AllQueries from "./components/supPages/AllQueries.jsx";
+import AddTask from "./components/supPages/AddTask.jsx"; // Import AddTask
 import AdminDashboard from "./components/Admin/AdminDashboard.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
@@ -71,11 +72,11 @@ const router = createBrowserRouter(
           <Route path="emp-time-tracking" element={<TimeTracking />} />
           <Route path="emp-queries" element={<Queries />} />
           <Route path="emp-reports" element={<Reports />} />
-
           {/* Superior Routes: roleId 2 */}
           <Route path="sup-all-tasks" element={<AllTasks />} />
           <Route path="sup-all-queries" element={<AllQueries />} />
-
+          <Route path="sup-add-task" element={<AddTask />} />{" "}
+          {/* Add Task Route */}
           {/* Admin Routes: roleId 1 */}
           <Route path="admin-dashboard" element={<AdminDashboard />} />
         </Route>
@@ -89,10 +90,10 @@ const router = createBrowserRouter(
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <AuthContextProvider>
-      <Provider store={store}>
+    <Provider store={store}>
+      <AuthContextProvider>
         <RouterProvider router={router} />
-      </Provider>
-    </AuthContextProvider>
+      </AuthContextProvider>
+    </Provider>
   </StrictMode>
 );
